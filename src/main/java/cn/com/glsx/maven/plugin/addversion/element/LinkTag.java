@@ -1,7 +1,7 @@
 package cn.com.glsx.maven.plugin.addversion.element;
 
 import java.io.Serializable;
-import cn.com.glsx.maven.plugin.sfv.annotation.Element;
+import cn.com.glsx.maven.plugin.addversion.annotation.Element;
 
 /**
  * @Title: LinkTag.java

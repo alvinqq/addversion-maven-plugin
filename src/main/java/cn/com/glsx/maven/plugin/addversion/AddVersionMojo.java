@@ -22,10 +22,10 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
-import cn.com.glsx.maven.plugin.sfv.element.LinkTag;
-import cn.com.glsx.maven.plugin.sfv.element.ScriptTag;
-import cn.com.glsx.maven.plugin.sfv.element.TagUtil;
-import cn.com.glsx.maven.plugin.sfv.svn.SVNUtil;
+import cn.com.glsx.maven.plugin.addversion.element.LinkTag;
+import cn.com.glsx.maven.plugin.addversion.element.ScriptTag;
+import cn.com.glsx.maven.plugin.addversion.element.TagUtil;
+import cn.com.glsx.maven.plugin.addversion.svn.SVNUtil;
 
 /**
  * @Title: AddVersionMojo.java
