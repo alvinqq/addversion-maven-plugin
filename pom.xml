@@ -7,6 +7,13 @@
 	<packaging>maven-plugin</packaging>
 
 	<name>static file add version Maven Plugin</name>
+	<description>
+		Because the browser cache, in the web project development, the static files can not be effective, 
+		so every time the version, are required to manually change the reference path for a static file 
+		view file, the Maven plugin can compile in the project stage, to add the version number parameters 
+		of static file reference view file path, parameters the value for the SVN version number of the 
+		file, and support file filter
+	</description>
 
 	<url>http://maven.apache.org</url>
 
@@ -28,6 +35,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.scm.version>1.9</maven.scm.version>
 	</properties>
 
 	<dependencies>
@@ -67,6 +75,77 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.8.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-api</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-manager-plexus</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-bazaar</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-svnexe</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-gitexe</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-jgit</artifactId>
+			<version>1.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-svn-commons</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-cvsexe</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-starteam</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-clearcase</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-perforce</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.scm</groupId>
+			<artifactId>maven-scm-provider-hg</artifactId>
+			<version>${maven.scm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+			<artifactId>maven-scm-provider-svnjava</artifactId>
+			<version>1.13</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.tmatesoft.svnkit</groupId>
+					<artifactId>svnkit</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -76,7 +155,7 @@
 				<artifactId>maven-plugin-plugin</artifactId>
 				<version>3.2</version>
 				<configuration>
-					<goalPrefix>av</goalPrefix>
+					<goalPrefix>addversion</goalPrefix>
 					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 				</configuration>
 				<executions>

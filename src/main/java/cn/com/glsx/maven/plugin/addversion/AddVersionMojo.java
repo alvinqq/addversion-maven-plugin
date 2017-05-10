@@ -18,14 +18,13 @@ import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.scm.command.info.InfoItem;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
-import org.tmatesoft.svn.core.SVNDirEntry;
-import org.tmatesoft.svn.core.wc.SVNClientManager;
 import cn.com.glsx.maven.plugin.addversion.element.LinkTag;
 import cn.com.glsx.maven.plugin.addversion.element.ScriptTag;
 import cn.com.glsx.maven.plugin.addversion.element.TagUtil;
-import cn.com.glsx.maven.plugin.addversion.svn.SVNUtil;
+import cn.com.glsx.maven.plugin.addversion.scm.ScmBuilder;
 
 /**
  * @Title: AddVersionMojo.java
@@ -44,6 +43,12 @@ public class AddVersionMojo extends AbstractMojo {
 	
 	@Parameter(property = "maven.addversion.skip", defaultValue = "false")
 	private boolean skip;
+	
+	/**
+	 * project basedir
+	 */
+	@Parameter(property = "project.basedir", required = true, readonly = true)
+	private File basedir;
 	
 	/**
 	 * project build directory
@@ -70,18 +75,29 @@ public class AddVersionMojo extends AbstractMojo {
 	private String[] excludes;
 	
 	/**
-	 * SVN Url path
+	 * SCM Url path
+	 * current support scm:svn:svnurl, scm:git:giturl
 	 */
 	@Parameter(required = true)
-	private String svnUrl;
+	private String urlScm;
 	
 	/**
-	 * SVN account map
-	 * key: userName
-	 * key: passWord
+	 * using the last committed version of the file
 	 */
-	@Parameter(required = true)
-	private Map<String, String> svnAuth;
+	@Parameter(property="maven.addversion.useLastCommittedRevision", defaultValue="false")
+	private boolean useLastCommittedRevision;
+	
+	/**
+	 * The username that is used when connecting to the SCM system.
+	 */
+	@Parameter(property="username")
+	private String username;
+
+	/**
+	 * The password that is used when connecting to the SCM system.
+	 */
+	@Parameter(property="password")
+	private String password;
 	
 	/**
 	 * version param name, default "v"
@@ -90,10 +106,12 @@ public class AddVersionMojo extends AbstractMojo {
 	private String versionParamName;
 	
 	/**
-	 * web app dynamic file catalog, default "WEB-INF"
+	 * web directory, default "src/main/webapp"
 	 */
-	@Parameter(defaultValue = "WEB-INF")
-	private String webInf;
+	@Parameter(defaultValue = "src/main/webapp")
+	private String webDirectory;
+	
+	private Map<String, InfoItem> itemMap = new HashMap<String, InfoItem>();
 	
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		printParams();
@@ -103,44 +121,50 @@ public class AddVersionMojo extends AbstractMojo {
 		if(includes == null || includes.length == 0){
 			includes = INCLUDES_DEFAULT;
 		}
-		String userName = svnAuth.get("userName");
-		if(StringUtils.isEmpty(userName)){
-			throw new MojoExecutionException("SVN UserName Required.");
-		}
-		String passWord = svnAuth.get("passWord");
-		if(StringUtils.isEmpty(userName)){
-			throw new MojoExecutionException("SVN PassWord Required.");
-		}
 		try{
-			SVNClientManager clientManager = SVNUtil.authSvn(svnUrl, userName, passWord);
-			if (null == clientManager) {
-				getLog().error("SVN login error! >>> url:" + svnUrl + " username:" + userName + " password:" + passWord);
-				throw new MojoExecutionException("SVN login error, Please check username or password!");
-			}
-			List<SVNDirEntry> dirEntries = new ArrayList<SVNDirEntry>();
-			dirEntries = SVNUtil.listEntries(dirEntries, SVNUtil.repository, "");
-			Map<String, SVNDirEntry> entryMap = new HashMap<String, SVNDirEntry>();
-			if(dirEntries != null && !dirEntries.isEmpty()){
-				for(SVNDirEntry entry:dirEntries){
-					for(String include:includes){
-						if(entry.getName().endsWith("." + include)){
-							getLog().debug("svn filePath: " + entry.getRelativePath() + "; author: '" + entry.getAuthor() + "'; revision: " + entry.getRevision() + "; date: " + entry.getDate());
-							entryMap.put(fileKey(entry.getRelativePath()), entry);
-						}
+			ScmBuilder scmBuilder = new ScmBuilder(urlScm, username, password).build();
+			
+			List<File> webFileList = new ArrayList<File>();
+			webFileList = getWebDirectoryFiles(webFileList, basedir);
+			if(useLastCommittedRevision && !webFileList.isEmpty()){
+				for(File f:webFileList){
+					InfoItem item = scmBuilder.get(f);
+					if(item != null){
+						itemMap.put(f.getName(), item);
 					}
 				}
 			}
+			
 			List<File> files = new ArrayList<File>();
 			files = getBuildDirectoryFiles(files, directory);
 			if(files != null && !files.isEmpty()){
 				for(File file:files){
-					addVersion(file, entryMap.get(fileKey(file.getPath())));
+					addVersion(file);
 				}
 			}
 		}catch(Exception e){
-			throw new MojoExecutionException("SVN Auth Failed or Path Not Found.", e);
+			throw new MojoExecutionException("Scm Build Failed.", e);
 		}
 	}
+	
+	private List<File> getWebDirectoryFiles(List<File> files, File file){
+		String[] includes = {"js", "css"};
+		if(file.isFile()){
+			for(String include:includes){
+				if(file.getName().endsWith("." + include)){
+					getLog().debug("static file path: " + file.getPath());
+					files.add(file);
+					break;
+				}
+			}
+		}else{
+			for(File sub : file.listFiles()){
+				getWebDirectoryFiles(files, sub);
+			}
+		}
+		return files;
+	}
+	
 	
 	/**
 	 * @Description: get build directory files, filter same files in includes list
@@ -173,7 +197,7 @@ public class AddVersionMojo extends AbstractMojo {
 	 * @author Alvin.zengqi  
 	 * @date 2017年4月17日 下午4:25:48
 	 */
-	private void addVersion(File file, SVNDirEntry entry){
+	private void addVersion(File file){
 		BufferedReader reader = null;
 		BufferedWriter writer = null;
 		File tmpFile = new File(directory + File.separator + "TMP-F-" + file.getName());
@@ -185,7 +209,7 @@ public class AddVersionMojo extends AbstractMojo {
 				if(line.startsWith("<script")){
 					ScriptTag scriptTag = TagUtil.tagToBean(line, ScriptTag.class);
 					if(scriptTag != null && StringUtils.isNotEmpty(scriptTag.getSrc())){
-						String src = addVersion(scriptTag.getSrc(), entry.getRevision());
+						String src = addUrlVersion(scriptTag.getSrc());
 						if(StringUtils.isNotEmpty(src)){
 							getLog().debug("add version before:" + line);
 							scriptTag.setSrc(src);
@@ -197,7 +221,7 @@ public class AddVersionMojo extends AbstractMojo {
 				}else if(line.startsWith("<link")){
 					LinkTag linkTag = TagUtil.tagToBean(line, LinkTag.class);
 					if(linkTag != null && StringUtils.isNotEmpty(linkTag.getHref())){
-						String href = addVersion(linkTag.getHref(), entry.getRevision());
+						String href = addUrlVersion(linkTag.getHref());
 						if(StringUtils.isNotEmpty(href)){
 							getLog().debug("add version before:" + line);
 							linkTag.setHref(href);
@@ -236,7 +260,7 @@ public class AddVersionMojo extends AbstractMojo {
 	 * @author Alvin.zengqi  
 	 * @date 2017年4月18日 上午10:11:38
 	 */
-	private String addVersion(String url, long version){
+	private String addUrlVersion(String url){
 		if(excludes != null && excludes.length > 0){
 			for(String exclude:excludes){
 				if(url.contains(exclude)){
@@ -244,8 +268,18 @@ public class AddVersionMojo extends AbstractMojo {
 				}
 			}
 		}
+		String version = String.valueOf(System.currentTimeMillis());
 		Map<String, String> params = parsePath(url);
-		params.put(versionParamName, String.valueOf(version));
+		if(useLastCommittedRevision){
+			String contextPath = params.get("contextPath");
+			String[] catalogs = contextPath.split("\\/");
+			String fileName = catalogs[catalogs.length -1];
+			InfoItem item = itemMap.get(fileName);
+			if(item != null){
+				version = item.getLastChangedRevision();
+			}
+		}
+		params.put(versionParamName, version);
 		url = assembleUrl(params);
 		return url;
 	}
@@ -280,20 +314,14 @@ public class AddVersionMojo extends AbstractMojo {
         return url;
     }
 	
-	private String fileKey(String path){
-		String key = path.split(webInf)[1];
-		key = key.replaceAll("\\/", "-");
-		key = key.replaceAll("\\\\", "-");
-		return key;
-	}
-	
 	private void printParams(){
 		getLog().info("---------------------------static---file---add---version--------------------------");
 		getLog().info("--- skip add version: " + skip);
 		getLog().info("---        directory: " + directory.getPath());
 		getLog().info("---  applicationName: " + applicationName);
-		getLog().info("---           svnUrl: " + svnUrl);
-		getLog().info("---          svnAuth: " + svnAuth);
+		getLog().info("---           urlScm: " + urlScm);
+		getLog().info("---         username: " + username);
+		getLog().info("---         password: " + password);
 		getLog().info("--- versionParamName: " + versionParamName);
 		getLog().info("---         includes: " + Arrays.toString(includes));
 		getLog().info("---         excludes: " + Arrays.toString(excludes));
