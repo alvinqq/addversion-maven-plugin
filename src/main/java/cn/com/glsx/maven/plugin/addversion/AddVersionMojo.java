@@ -114,7 +114,6 @@ public class AddVersionMojo extends AbstractMojo {
 	private Map<String, InfoItem> itemMap = new HashMap<String, InfoItem>();
 	
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		printParams();
 		if(skip){
 			return;
 		}
@@ -151,7 +150,7 @@ public class AddVersionMojo extends AbstractMojo {
 		String[] includes = {"js", "css"};
 		if(file.isFile()){
 			for(String include:includes){
-				if(file.getName().endsWith("." + include)){
+				if(file.getName().endsWith("." + include) && file.getPath().startsWith(basedir.getPath() + "\\" + webDirectory.replaceAll("\\/", "\\\\"))){
 					getLog().debug("static file path: " + file.getPath());
 					files.add(file);
 					break;
@@ -159,9 +158,7 @@ public class AddVersionMojo extends AbstractMojo {
 			}
 		}else{
 			for(File sub : file.listFiles()){
-				if(sub.getPath().startsWith(basedir.getPath() + "\\" + webDirectory.replaceAll("\\/", "\\\\"))){
-					getWebDirectoryFiles(files, sub);
-				}
+				getWebDirectoryFiles(files, sub);
 			}
 		}
 		return files;
@@ -200,6 +197,7 @@ public class AddVersionMojo extends AbstractMojo {
 	 * @date 2017年4月17日 下午4:25:48
 	 */
 	private void addVersion(File file){
+		getLog().debug("page file:" + file.getPath());
 		BufferedReader reader = null;
 		BufferedWriter writer = null;
 		File tmpFile = new File(directory + File.separator + "TMP-F-" + file.getName());
@@ -253,6 +251,7 @@ public class AddVersionMojo extends AbstractMojo {
 				getLog().error("Close Reader Error", e);
 			}
 		}
+		getLog().debug("");
 	}
 	
 	/**
@@ -316,18 +315,4 @@ public class AddVersionMojo extends AbstractMojo {
         return url;
     }
 	
-	private void printParams(){
-		getLog().info("---------------------------static---file---add---version--------------------------");
-		getLog().info("--- skip add version: " + skip);
-		getLog().info("---        directory: " + directory.getPath());
-		getLog().info("---          basedir: " + basedir.getPath());
-		getLog().info("---  applicationName: " + applicationName);
-		getLog().info("---           urlScm: " + urlScm);
-		getLog().info("---         username: " + username);
-		getLog().info("---         password: " + password);
-		getLog().info("--- versionParamName: " + versionParamName);
-		getLog().info("---         includes: " + Arrays.toString(includes));
-		getLog().info("---         excludes: " + Arrays.toString(excludes));
-		getLog().info("---------------------------static---file---add---version--------------------------");
-	}
 }
