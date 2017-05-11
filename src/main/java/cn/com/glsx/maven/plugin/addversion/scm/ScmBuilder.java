@@ -67,6 +67,7 @@ public class ScmBuilder {
 			scmRepo.setPassword(this.password);
 		}
 		this.scmProvider = this.scmManager.getProviderByRepository(this.repository);
+		getLog().info("scm build provider:" + this.repository.getProvider() + " scmType:" + this.scmProvider.getScmType());
 		return this;
 	}
 

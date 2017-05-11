@@ -318,6 +318,7 @@ public class AddVersionMojo extends AbstractMojo {
 		getLog().info("---------------------------static---file---add---version--------------------------");
 		getLog().info("--- skip add version: " + skip);
 		getLog().info("---        directory: " + directory.getPath());
+		getLog().info("---          basedir: " + basedir.getPath());
 		getLog().info("---  applicationName: " + applicationName);
 		getLog().info("---           urlScm: " + urlScm);
 		getLog().info("---         username: " + username);
