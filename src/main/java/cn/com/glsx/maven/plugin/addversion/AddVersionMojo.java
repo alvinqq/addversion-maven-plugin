@@ -159,7 +159,9 @@ public class AddVersionMojo extends AbstractMojo {
 			}
 		}else{
 			for(File sub : file.listFiles()){
-				getWebDirectoryFiles(files, sub);
+				if(sub.getPath().startsWith(basedir.getPath() + "\\" + webDirectory.replaceAll("\\/", "\\\\"))){
+					getWebDirectoryFiles(files, sub);
+				}
 			}
 		}
 		return files;
