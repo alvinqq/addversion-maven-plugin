@@ -105,7 +105,13 @@ public class ScmBuilder {
 			}
 			commandParameters.setInt(CommandParameter.SCM_SHORT_REVISION_LENGTH, this.shortRevisionLength);
 		}
-		return this.scmProvider.info(repository.getProviderRepository(), new ScmFileSet(scmDirectory, files), commandParameters);
+		ScmFileSet scmFileSet = null;
+		if(files != null && !files.isEmpty()){
+			scmFileSet = new ScmFileSet(scmDirectory, files);
+		}else{
+			scmFileSet = new ScmFileSet(scmDirectory);
+		}
+		return this.scmProvider.info(repository.getProviderRepository(), scmFileSet, commandParameters);
 	}
 	
 	public InfoScmResult info(File scmDirectory) throws ScmException {
