@@ -20,9 +20,9 @@ pom.xml添加插件
 		<configuration>
     		<!-- 当前工程版本库完整路径 -->
 	  		<urlScm>scm:svn:svn://192.168.3.233/common/trunk/site</urlScm>
- 		<!-- 版本库账号，可为空 -->
+ 			<!-- 版本库账号，可为空 -->
 			<username>******</username>
-		<!-- 版本库密码，可为空 -->
+			<!-- 版本库密码，可为空 -->
 			<password>******</password>
     		<!-- 版本号参数名，默认:v -->
     		<versionParamName>v</versionParamName>
@@ -36,8 +36,8 @@ pom.xml添加插件
 				<exclude>amazeui.min.js</exclude>
 				<exclude>jquery.min.js</exclude>
 			</excludes>
-		<!-- 是否使用文件最后提交的版本号作为参数值，默认false(使用系统时间戳) -->
-                        <useLastCommittedRevision>true</useLastCommittedRevision>
+			<!-- 是否使用文件最后提交的版本号作为参数值，默认false(使用系统时间戳) -->
+			<useLastCommittedRevision>true</useLastCommittedRevision>
 		</configuration>
   	</plugin>
             
