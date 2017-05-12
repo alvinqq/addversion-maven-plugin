@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>cn.com.glsx.maven.plugin</groupId>
+	<groupId>com.github.alvinqq</groupId>
 	<artifactId>addversion-maven-plugin</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2</version>
 	<packaging>maven-plugin</packaging>
 
-	<name>static file add version Maven Plugin</name>
+	<name>static file url add version Maven Plugin</name>
 	<description>
 		Because the browser cache, in the web project development, the static files can not be effective, 
 		so every time the version, are required to manually change the reference path for a static file 
@@ -177,6 +177,9 @@
 						<goals>
 							<goal>helpmojo</goal>
 						</goals>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -221,7 +224,7 @@
 
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>release</id>
 			<build>
@@ -232,7 +235,7 @@
 						<version>1.6.3</version>
 						<extensions>true</extensions>
 						<configuration>
-							<serverId>ossrh</serverId>
+							<serverId>oss</serverId>
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 							<autoReleaseAfterClose>true</autoReleaseAfterClose>
 						</configuration>
@@ -301,20 +304,7 @@
 			</build>
 		</profile>
 	</profiles>
-	<!-- <distributionManagement>
-		<repository>
-			<id>nexus-releases</id>
-			<name>Local Nexus Releases Repository</name>
-			<url>http://mvnrepo.glsx.net:7060/nexus/content/repositories/releases</url>
-		</repository>
 
-		<snapshotRepository>
-			<id>nexus-snapshots</id>
-			<name>Local Nexus Snapshots Repository</name>
-			<url>http://mvnrepo.glsx.net:7060/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement> -->
-	
 	<distributionManagement>
 		<repository>
 			<id>oss</id>
