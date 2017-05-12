@@ -5,9 +5,9 @@
 pom.xml添加插件
 
   	<plugin>
-		<groupId>cn.com.glsx.maven.plugin</groupId>
+		<groupId>com.github.alvinqq</groupId>
 		<artifactId>addversion-maven-plugin</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.1</version>
 		<executions>
 			<execution>
 				<id>static-file-addversion</id>
@@ -19,13 +19,9 @@ pom.xml添加插件
 		</executions>
 		<configuration>
     		<!-- 当前工程svn完整路径 -->
-	  		<svnUrl>svn://192.168.1.100/common/trunk/</svnUrl>
-			<svnAuth>
-      			<!-- svn账号 -->
-				<userName>******</userName>
-      			<!-- svn密码 -->
-				<passWord>******</passWord>
-			</svnAuth>
+	  		<urlScm>scm:svn:svn://192.168.3.233/common/trunk/site</urlScm>
+			<username>******</username>
+			<password>******</password>
     		<!-- 版本号参数名，默认:v -->
     		<versionParamName>v</versionParamName>
     		<!-- 包含视图文件类型：jsp、flt等，默认:jsp、html、flt -->
@@ -38,6 +34,7 @@ pom.xml添加插件
 				<exclude>amazeui.min.js</exclude>
 				<exclude>jquery.min.js</exclude>
 			</excludes>
+                        <useLastCommittedRevision>true</useLastCommittedRevision>
 		</configuration>
   	</plugin>
             
