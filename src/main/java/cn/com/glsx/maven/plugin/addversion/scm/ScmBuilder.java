@@ -22,13 +22,8 @@ import org.apache.maven.scm.provider.svn.svnjava.SvnJavaScmProvider;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.apache.maven.scm.repository.ScmRepositoryException;
 /**
- * @Title: SCMUtil.java
- * @Description:
  * @author Alvin.zengqi
- * @date 2017年5月3日 上午9:28:33
  * @version V1.0
- * @Company: Didihu.com.cn
- * @Copyright Copyright (c) 2015
  */
 public class ScmBuilder {
 	private ScmManager scmManager;

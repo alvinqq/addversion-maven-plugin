@@ -4,13 +4,8 @@ import java.io.Serializable;
 import cn.com.glsx.maven.plugin.addversion.annotation.Element;
 
 /**
- * @Title: LinkTag.java
- * @Description:
  * @author Alvin.zengqi  
- * @date 2017年4月17日 下午8:30:29
  * @version V1.0  
- * @Company: Didihu.com.cn
- * @Copyright Copyright (c) 2015
  */
 @SuppressWarnings("serial")
 @Element("link")

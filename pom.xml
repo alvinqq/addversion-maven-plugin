@@ -15,7 +15,7 @@
 		file, and support file filter
 	</description>
 
-	<url>http://maven.apache.org</url>
+	<url>https://github.com/alvinqq/addversion-maven-plugin</url>
 
 	<developers>
 		<developer>
@@ -37,6 +37,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.scm.version>1.9</maven.scm.version>
 	</properties>
+
+	<scm>
+		<connection>scm:git:https://github.com/alvinqq/addversion-maven-plugin.git</connection>
+		<developerConnection>scm:git:https://github.com/alvinqq/addversion-maven-plugin.git</developerConnection>
+		<url>https://github.com/alvinqq/addversion-maven-plugin</url>
+		<tag>v${project.version}</tag>
+	</scm>
 
 	<dependencies>
 		<dependency>
@@ -214,8 +221,87 @@
 
 			</build>
 		</profile>
+		
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.3</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<useReleaseProfile>false</useReleaseProfile>
+							<releaseProfiles>release</releaseProfiles>
+							<goals>deploy</goals>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.0</version>
+						<configuration>
+							<source>1.6</source>
+							<target>1.6</target>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9.1</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
-	<distributionManagement>
+	<!-- <distributionManagement>
 		<repository>
 			<id>nexus-releases</id>
 			<name>Local Nexus Releases Repository</name>
@@ -226,6 +312,18 @@
 			<id>nexus-snapshots</id>
 			<name>Local Nexus Snapshots Repository</name>
 			<url>http://mvnrepo.glsx.net:7060/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement> -->
+	
+	<distributionManagement>
+		<repository>
+			<id>oss</id>
+			<name>Maven Central Staging Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<id>oss</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>

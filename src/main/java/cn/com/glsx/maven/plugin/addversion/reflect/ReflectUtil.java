@@ -7,13 +7,8 @@ import java.util.List;
 import cn.com.glsx.maven.plugin.addversion.annotation.Element;
 
 /**
- * @Title: ReflectUtil.java
- * @Description:
  * @author Alvin.zengqi  
- * @date 2017年4月17日 下午9:10:57
  * @version V1.0  
- * @Company: Didihu.com.cn
- * @Copyright Copyright (c) 2015
  */
 public class ReflectUtil {
 	

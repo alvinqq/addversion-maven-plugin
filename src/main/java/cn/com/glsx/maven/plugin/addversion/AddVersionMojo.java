@@ -26,13 +26,8 @@ import cn.com.glsx.maven.plugin.addversion.element.TagUtil;
 import cn.com.glsx.maven.plugin.addversion.scm.ScmBuilder;
 
 /**
- * @Title: AddVersionMojo.java
- * @Description: web app static file add versoin
  * @author Alvin.zengqi  
- * @date 2017年4月17日 下午3:19:18
  * @version V1.0  
- * @Company: Didihu.com.cn
- * @Copyright Copyright (c) 2015
  */
 @Mojo(name = "add-version", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
 @Execute(goal = "add-version")
@@ -163,15 +158,6 @@ public class AddVersionMojo extends AbstractMojo {
 		return files;
 	}
 	
-	
-	/**
-	 * @Description: get build directory files, filter same files in includes list
-	 * @param files
-	 * @param file
-	 * @return
-	 * @author Alvin.zengqi  
-	 * @date 2017年4月17日 下午4:18:43
-	 */
 	private List<File> getBuildDirectoryFiles(List<File> files, File file){
 		if(file.isFile()){
 			for(String include:includes){
@@ -189,12 +175,6 @@ public class AddVersionMojo extends AbstractMojo {
 		return files;
 	}
 	
-	/**
-	 * @Description: add version
-	 * @param file
-	 * @author Alvin.zengqi  
-	 * @date 2017年4月17日 下午4:25:48
-	 */
 	private void addVersion(File file){
 		getLog().debug("page file:" + file.getPath());
 		BufferedReader reader = null;
@@ -253,13 +233,6 @@ public class AddVersionMojo extends AbstractMojo {
 		getLog().debug("");
 	}
 	
-	/**
-	 * @Description: add version for url
-	 * @param url
-	 * @return
-	 * @author Alvin.zengqi  
-	 * @date 2017年4月18日 上午10:11:38
-	 */
 	private String addUrlVersion(String url){
 		if(excludes != null && excludes.length > 0){
 			for(String exclude:excludes){

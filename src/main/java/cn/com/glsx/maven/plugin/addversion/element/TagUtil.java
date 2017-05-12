@@ -15,13 +15,8 @@ import org.jsoup.select.Elements;
 import cn.com.glsx.maven.plugin.addversion.reflect.ReflectUtil;
 
 /**
- * @Title: TagUtil.java
- * @Description:
  * @author Alvin.zengqi  
- * @date 2017年4月17日 下午9:00:45
  * @version V1.0  
- * @Company: Didihu.com.cn
- * @Copyright Copyright (c) 2015
  */
 public class TagUtil {
 	
