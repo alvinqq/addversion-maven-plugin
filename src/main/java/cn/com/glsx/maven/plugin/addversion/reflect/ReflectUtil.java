@@ -3,6 +3,7 @@ package cn.com.glsx.maven.plugin.addversion.reflect;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import cn.com.glsx.maven.plugin.addversion.annotation.Element;
 
@@ -29,12 +30,18 @@ public class ReflectUtil {
 		return elements;
 	}
 	
-	public static Method getMethod(Class<?> clazz, String getOrSet , String fieldName){
+	public static Object invoke(Object obj, String methodName, Object... args) {
+		Class<?>[] parameterTypes = null;
+		if (args != null && args.length > 0) {
+			parameterTypes = new Class[args.length];
+			for (int i=0; i< args.length; i++) {
+				parameterTypes[i] = getObjectType(args[i]);
+			}
+		}
 		try {
-			if("set".equals(getOrSet)){
-				return clazz.getMethod(methodName(getOrSet, fieldName), String.class);
-			}else if("get".equals(getOrSet)){
-				return clazz.getMethod(methodName(getOrSet, fieldName));
+			Method method = obj.getClass().getMethod(methodName, parameterTypes);
+			if (method != null) { 
+				return method.invoke(obj, args); 
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -42,28 +49,37 @@ public class ReflectUtil {
 		return null;
 	}
 	
-	public static Object invoke(Object obj, String getOrSet, String fieldName, Object... args){
-		Method method = getMethod(obj.getClass(), getOrSet, fieldName);
-		if(method != null){
-			try {
-				return method.invoke(obj, args);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
-	
-	public static <T> T invoke(Class<T> clazz, Object obj, String getOrSet, String fieldName, Object... args){
-		Object t = invoke(obj, getOrSet, fieldName, args);
+	public static <T> T invoke(Class<T> clazz, Object obj, String methodName, Object... args){
+		Object t = invoke(obj, methodName, args);
 		if(t != null){
 			return clazz.cast(t);
 		}
 		return null;
 	}
 	
-	private static String methodName(String getOrSet, String filedName){
+	public static String methodName(String getOrSet, String filedName){
 		String methodName = getOrSet + filedName.substring(0, 1).toUpperCase() + filedName.substring(1);
 		return methodName;
+	}
+	
+	private static Class<?> getObjectType(Object obj){
+		if (obj instanceof Integer) {
+			return Integer.class;
+		} else if (obj instanceof String) {
+			return String.class;
+		} else if (obj instanceof Double) {
+			return Double.class;
+		} else if (obj instanceof Float) {
+			return Float.class;
+		} else if (obj instanceof Long) {
+			return Long.class;
+		} else if (obj instanceof Boolean) {
+			return Boolean.class;
+		} else if (obj instanceof Date) { 
+			return Date.class; 
+		} else if (obj instanceof Short) {
+			return Short.class;
+		}
+		return Object.class;
 	}
 }
