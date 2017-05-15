@@ -87,20 +87,4 @@ public class TagUtil {
 		return null;
 	}
 	
-	public static void main(String [] args){
-		/*ScriptTag script = new ScriptTag();
-		script.setId("test");
-		script.setSrc("http://www.baidu.com");
-		script.setType("javascript/text");
-		script.getCustomAttr().put("data-jquery", "jquery");
-		script.getCustomAttr().put("data-java", "java");
-		System.out.println(TagUtil.beanToTag(script));*/
-		String script = "<script id=\"test\" type=\"javascript/text\" src=\"http://www.baidu.com\" data-jquery=\"jquery\" data-java=\"java\"></script>";
-		ScriptTag scriptTag = TagUtil.tagToBean(script, ScriptTag.class);
-		System.out.println(scriptTag.toString());
-		scriptTag.setAsync("true");
-		scriptTag.getCustomAttr().put("data-java", "javascript");
-		System.out.println(TagUtil.beanToTag(scriptTag));
-	}
-	
 }
