@@ -122,7 +122,16 @@ public class AddVersionMojo extends AbstractMojo {
 			if(useLastCommittedRevision && !webFileList.isEmpty()){
 				for(File f:webFileList){
 					InfoItem item = scmBuilder.get(f);
+					if(item == null){
+						item = new InfoItem();
+						item.setPath(f.getPath());
+						item.setLastChangedRevision(String.valueOf(f.lastModified()));
+						item.setLastChangedDate(String.valueOf(f.lastModified()));
+					}
 					if(item != null){
+						if(StringUtils.isEmpty(item.getLastChangedRevision())){
+							item.setLastChangedRevision(String.valueOf(f.lastModified()));
+						}
 						itemMap.put(f.getName(), item);
 					}
 				}
@@ -185,8 +194,12 @@ public class AddVersionMojo extends AbstractMojo {
 			writer = new BufferedWriter(new FileWriter(tmpFile));
 			while(reader.ready()){
 				String line = reader.readLine();
-				if(line.startsWith("<script")){
-					ScriptTag scriptTag = TagUtil.tagToBean(line, ScriptTag.class);
+				if(line.trim().startsWith("<script")){
+					if(!line.trim().endsWith("</script>")){
+						getLog().debug("please check this script tag[" + line + "] format, eg:<script></script>");
+						continue;
+					}
+					ScriptTag scriptTag = TagUtil.tagToBean(line.trim(), ScriptTag.class);
 					if(scriptTag != null && StringUtils.isNotEmpty(scriptTag.getSrc())){
 						String src = addUrlVersion(scriptTag.getSrc());
 						if(StringUtils.isNotEmpty(src)){
@@ -197,8 +210,8 @@ public class AddVersionMojo extends AbstractMojo {
 							getLog().debug("add version after:" + script);
 						}
 					}
-				}else if(line.startsWith("<link")){
-					LinkTag linkTag = TagUtil.tagToBean(line, LinkTag.class);
+				}else if(line.trim().startsWith("<link")){
+					LinkTag linkTag = TagUtil.tagToBean(line.trim(), LinkTag.class);
 					if(linkTag != null && StringUtils.isNotEmpty(linkTag.getHref())){
 						String href = addUrlVersion(linkTag.getHref());
 						if(StringUtils.isNotEmpty(href)){

@@ -9,7 +9,10 @@ import cn.com.glsx.maven.plugin.addversion.annotation.Element;
  */
 @SuppressWarnings("serial")
 @Element("link")
-public class LinkTag implements Serializable{
+public class LinkTag extends BaseTag implements Serializable{
+	
+	@Element("id")
+	private String id;
 	
 	@Element("rel")
 	private String rel;
@@ -19,6 +22,9 @@ public class LinkTag implements Serializable{
 	
 	@Element("href")
 	private String href;
+	
+	@Element("title")
+	private String title;
 
 	public String getRel() {
 		return rel;
@@ -44,9 +50,25 @@ public class LinkTag implements Serializable{
 		this.href = href;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	@Override
 	public String toString() {
-		return "LinkTag [rel=" + rel + ", type=" + type + ", href=" + href + "]";
+		return "LinkTag [id=" + id + ", rel=" + rel + ", type=" + type + ", href=" + href + ", title=" + title + ", customAttr=" + getCustomAttr() + "]";
 	}
-	
+
 }

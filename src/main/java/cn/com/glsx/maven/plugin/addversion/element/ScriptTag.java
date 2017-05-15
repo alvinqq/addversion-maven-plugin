@@ -9,7 +9,10 @@ import cn.com.glsx.maven.plugin.addversion.annotation.Element;
  */
 @SuppressWarnings("serial")
 @Element("script")
-public class ScriptTag implements Serializable{
+public class ScriptTag extends BaseTag implements Serializable{
+	
+	@Element("id")
+	private String id;
 	
 	@Element("type")
 	private String type;
@@ -19,6 +22,12 @@ public class ScriptTag implements Serializable{
 	
 	@Element("charset")
 	private String charset;
+	
+	@Element("async")
+	private String async;
+	
+	@Element("title")
+	private String title;
 
 	public String getType() {
 		return type;
@@ -44,9 +53,33 @@ public class ScriptTag implements Serializable{
 		this.charset = charset;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getAsync() {
+		return async;
+	}
+
+	public void setAsync(String async) {
+		this.async = async;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	@Override
 	public String toString() {
-		return "ScriptTag [type=" + type + ", src=" + src + ", charset=" + charset + "]";
+		return "ScriptTag [id=" + id + ", type=" + type + ", src=" + src + ", charset=" + charset + ", async=" + async + ", title=" + title + ", customAttr=" + getCustomAttr() + "]";
 	}
 
 }
