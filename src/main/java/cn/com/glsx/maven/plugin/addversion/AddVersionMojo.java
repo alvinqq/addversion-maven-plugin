@@ -194,10 +194,10 @@ public class AddVersionMojo extends AbstractMojo {
 			writer = new BufferedWriter(new FileWriter(tmpFile));
 			while(reader.ready()){
 				String line = reader.readLine();
-				if(line.trim().startsWith("<script")){
+				out:if(line.trim().startsWith("<script")){
 					if(!line.trim().endsWith("</script>")){
 						getLog().debug("please check this script tag[" + line + "] format, eg:<script></script>");
-						continue;
+						break out;
 					}
 					ScriptTag scriptTag = TagUtil.tagToBean(line.trim(), ScriptTag.class);
 					if(scriptTag != null && StringUtils.isNotEmpty(scriptTag.getSrc())){
