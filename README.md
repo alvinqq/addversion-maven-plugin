@@ -7,7 +7,7 @@ pom.xml添加插件
   	<plugin>
 		<groupId>com.github.alvinqq</groupId>
 		<artifactId>addversion-maven-plugin</artifactId>
-		<version>1.0.1</version>
+		<version>1.0.3</version>
 		<executions>
 			<execution>
 				<id>static-file-addversion</id>
@@ -36,7 +36,7 @@ pom.xml添加插件
 				<exclude>amazeui.min.js</exclude>
 				<exclude>jquery.min.js</exclude>
 			</excludes>
-			<!-- 是否使用文件最后提交的版本号作为参数值，默认false(使用系统时间戳) -->
+			<!-- 是否使用文件最后提交的版本号作为参数值，默认false(使用文件最后修改时间) -->
 			<useLastCommittedRevision>true</useLastCommittedRevision>
 		</configuration>
   	</plugin>
