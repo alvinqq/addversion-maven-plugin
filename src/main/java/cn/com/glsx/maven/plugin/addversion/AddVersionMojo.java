@@ -153,7 +153,8 @@ public class AddVersionMojo extends AbstractMojo {
 		String[] includes = {"js", "css"};
 		if(file.isFile()){
 			for(String include:includes){
-				if(file.getName().endsWith("." + include) && file.getPath().startsWith(basedir.getPath() + "\\" + webDirectory.replaceAll("\\/", "\\\\"))){
+				if(file.getName().endsWith("." + include) && (file.getPath().startsWith(basedir.getPath() + "\\" + webDirectory.replaceAll("\\/", "\\\\")) 
+						|| file.getPath().startsWith(basedir.getPath() + "/" + webDirectory))){
 					getLog().debug("static file path: " + file.getPath());
 					files.add(file);
 					break;
